@@ -1,0 +1,38 @@
+# Use root/example as user/password credentials
+version: '3.7'
+
+services:
+
+  db:
+    image: mariadb:10.4
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8090:8080
+    volumes:
+      - ./adminer.css:/var/www/html/adminer.css
+
+  node:
+    image: node
+    working_dir: /home/node/app
+    volumes:
+      - ./api-docker/:/home/node/app
+    expose:
+      - "8080"
+    ports:
+      - 8091:8080
+    command: /bin/sh -c "npm start" 
+
+  vuejs:
+    image: node
+    working_dir: /home/node/app
+    volumes:
+      - ./client-docker/:/home/node/app
+    ports:
+      - 8092:8080
+    command: /bin/sh -c "npm run serve"
